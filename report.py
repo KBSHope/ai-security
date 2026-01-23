@@ -3,6 +3,7 @@ import re
 from collections import Counter
 from pathlib import Path
 from rules import apply_rules
+from incidents import build_incidents
 
 IP_RE = re.compile(r"\b(\d{1,3}\.){3}\d{1,3}\b")
 
@@ -32,6 +33,7 @@ def build_report(log_path: str = "logs/auth.log") -> dict:
     counts = Counter()
     ip_counts = Counter()
     high_events = []
+    events = []  # ✅ 放這裡（在函式內）
 
     for raw in log_path.read_text(encoding="utf-8", errors="replace").splitlines():
         if not raw.strip():
@@ -49,7 +51,6 @@ def build_report(log_path: str = "logs/auth.log") -> dict:
             ip_counts[ip_addr] += 1
             ip_fail_count = ip_counts[ip_addr]
 
-        # ✅ event 必須在迴圈裡（每行一個）
         event = {
             "score": base_score,
             "risk": base_risk,
@@ -63,19 +64,25 @@ def build_report(log_path: str = "logs/auth.log") -> dict:
         event["score"] = final_score
         event["risk"] = risk(final_score)
 
+        events.append(event)  # ✅ 這行一定要有
+
         counts[event["risk"]] += 1
         if event["risk"] == "HIGH":
             high_events.append(event)
 
+    incidents = build_incidents(high_events, fail_threshold=5)
+
     report = {
-        "summary": {
-            "total": sum(counts.values()),
-            "by_risk": dict(counts),
-        },
-        "top_ips": ip_counts.most_common(3),
-        "high_events": high_events,
-    }
+    "summary": {
+        "total": sum(counts.values()),
+        "by_risk": dict(counts),
+    },
+    "top_ips": ip_counts.most_common(3),
+    "high_events": high_events,
+    "incidents": incidents,
+}
     return report
+
 
 def main():
     report = build_report("logs/auth.log")
