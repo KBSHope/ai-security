@@ -1,14 +1,29 @@
-def analyze_log(line):
-    suspicious_keywords = ["failed", "error", "attack", "unauthorized"]
-    for word in suspicious_keywords:
-        if word in line.lower():
-            return True
-    return False
+import re
+from datetime import datetime
+from typing import Optional
 
 
-with open("logs/auth.log", "r") as f:
-    for line in f:
-        if analyze_log(line):
-            print("[SUSPICIOUS]", line.strip())
-        else:
-            print("OK:", line.strip())
+def parse_line(line: str) -> Optional[dict]:
+    ip_match = re.search(r"(\d+\.\d+\.\d+\.\d+)", line)
+    if not ip_match:
+        return None
+
+    status = "fail" if ("Failed" in line or "failed" in line) else "success"
+
+    return {
+        "timestamp": datetime.now(),     # MVP：先用 now（下一步再解析真實時間）
+        "ip": ip_match.group(1),
+        "username": "unknown",
+        "status": status,
+        "raw": line.strip(),
+    }
+
+
+def parse_auth_log(path: str) -> list[dict]:
+    events: list[dict] = []
+    with open(path, "r", encoding="utf-8", errors="ignore") as f:
+        for line in f:
+            ev = parse_line(line)
+            if ev:
+                events.append(ev)
+    return events
