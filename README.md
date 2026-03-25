@@ -163,9 +163,20 @@ Responsible for visualizing analysis results through a web dashboard.
 Main folder:
 - `dashboard/`
 
+
+## Screenshots
+
+### Dashboard
+![Dashboard Home](./docs/dashboard-home.png)
+
+### API Docs
+![API Docs](./docs/api-docs.png)
+
 ---
 
 ## Project Structure
+
+
 
 ```bash
 ai-security/
