@@ -1,0 +1,26 @@
+{
+  "summary": {
+    "total_events": 4,
+    "by_risk": {
+      "CRITICAL": 1
+    }
+  },
+  "top_ips": [
+    [
+      "1.2.3.4",
+      4
+    ]
+  ],
+  "incidents": [
+    {
+      "type": "ROOT_USAGE",
+      "severity": "CRITICAL",
+      "username": "root",
+      "ip": "1.2.3.4",
+      "time": "2026-02-23 08:00:00+00:00",
+      "evidence": [
+        "{\"eventTime\":\"2026-02-23T08:00:00Z\",\"eventName\":\"ConsoleLogin\",\"eventSource\":\"signin.amazonaws.com\",\"userIdentity\":{\"type\":\"Root\",\"accountId\":\"123456789012\",\"userName\":\"root\"},\"sourceIPAddress\":\"1.2.3.4\"}"
+      ]
+    }
+  ]
+}

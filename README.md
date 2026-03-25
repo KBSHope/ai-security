@@ -1,80 +1,101 @@
-# AI Security – Suspicious Login Detection
+# AI Security SaaS MVP
 
-This project analyzes authentication logs and detects suspicious login behavior,
-aggregating high-risk events into security incidents.
+一個可上傳 **Linux auth log** 與 **CloudTrail log**，並進行 **Unified Threat Analysis** 的 AI Security SaaS MVP。
+
+目前已完成：
+
+- FastAPI 後端 API
+- React + Vite 前端 Dashboard
+- Unified Analysis 串接
+- Incident 顯示
+- Timeline 顯示
+- JSON 報告下載
+- HTML 報告下載
+
+---
 
 ## Features
 
-- Parse auth logs
-- Score events based on risk rules
-- Track failed login attempts per IP
-- Aggregate high-risk events into incidents
-- Export structured JSON report
+### 1. Unified Threat Analysis
+可同時上傳：
+
+- `auth.log`
+- `cloudtrail.jsonl`
+
+系統會將兩種來源的資料做整合分析，輸出：
+
+- incidents
+- risk score
+- critical incidents
+- top IP
+- timeline
+
+### 2. Web Dashboard
+前端 Dashboard 可顯示：
+
+- Executive Summary
+- Highest Risk Score
+- Critical Incidents
+- Top IP
+- Incidents 卡片
+- Timeline 表格
+
+### 3. Report Export
+支援下載：
+
+- `unified_report.json`
+- `unified_report.html`
+
+---
 
 ## Project Structure
 
-```text
+```bash
 ai-security/
-├── analyze.py
-├── analyze_ai.py
-├── export_report.py
-├── report.py
-├── incidents.py
-├── rules.py
-├── logs/
-│   └── auth.log (ignored)
+├─ api.py
+├─ main.py
+├─ analyze.py
+├─ analyze_ai.py
+├─ cloud_analyze.py
+├─ unify_report.py
+├─ incidents.py
+├─ rules.py
+├─ logs/
+│  └─ auth.log
+├─ cloud_logs/
+│  └─ cloudtrail.jsonl
+├─ uploads/
+├─ dashboard/
+│  ├─ src/
+│  │  └─ App.jsx
+│  ├─ package.json
+│  └─ vite.config.js
+└─ README.md
 
-## Sample Output
 
-```md
-## Incident Detection Logic
 
-High-risk login events are aggregated into security incidents based on source IP.
+## Tech Stack
 
-- Failed login attempts are tracked per IP address
-- If the maximum failure count for an IP reaches a threshold (default: `5`)
-  - The incident is classified as `BRUTE_FORCE`
-  - Severity is marked as `CRITICAL`
-- Otherwise, it is labeled as `SUSPICIOUS_ACTIVITY`
+### Backend
+- FastAPI
+- Python
 
-This approach simulates real-world SOC workflows by correlating raw events into actionable security incidents.
-After running `python report.py`, the system generates a structured JSON report:
+### Frontend
+- React
+- Vite
 
-```json
-{
-  "summary": {
-    "total": 9,
-    "by_risk": {
-      "HIGH": 8,
-      "LOW": 1
-    }
-  },
-  "top_ips": [
-    ["10.0.0.5", 6],
-    ["192.168.1.10", 1],
-    ["8.8.8.8", 1]
-  ],
-  "incidents": [
-    {
-      "type": "BRUTE_FORCE",
-      "severity": "CRITICAL",
-      "ip": "10.0.0.5",
-      "count": 6,
-      "max_ip_fail_count": 6,
-      "evidence": [
-        "failed login from 10.0.0.5"
-      ]
-    }
-  ]
-}
-## Demo
+### Analysis
+- Auth log analysis
+- CloudTrail analysis
+- Unified incident reporting
 
-You can modify `logs/auth.log` to simulate different attack scenarios
-(e.g. brute force, single failed login, mixed IP sources)
-and observe how incidents are generated.
+---
 
 ## How to Run
 
-```bash
-python report.py
+### 1. Start Backend
 
+在專案根目錄執行：
+
+```bash
+py -m uvicorn api:app --reload

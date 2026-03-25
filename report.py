@@ -1,10 +1,11 @@
 # report.py
 import json
 import re
+print("RUNNING report.py")
 from pathlib import Path
 from collections import Counter, defaultdict
 from datetime import datetime, timedelta
-
+from rules import apply_rules
 # --------------------
 # Regex
 # --------------------
@@ -80,22 +81,56 @@ def detect_fail_then_success(events, window=timedelta(minutes=5)):
 def build_report(log_path="logs/auth.log"):
     events = parse_auth_log(log_path)
 
-    ip_incidents = build_ip_incidents(events)
-    b2_incidents = detect_fail_then_success(events)
+    # ===== 這裡開始 =====
+    ip_counts = Counter()
+    scored_events = []
 
-    ip_counter = Counter(e["ip"] for e in events if e["ip"])
+    for e in events:
+        ip = e.get("ip")
+        if ip and e.get("status") == "fail":
+            ip_counts[ip] += 1
+
+        ip_fail_count = ip_counts[ip] if ip else 0
+
+        result = apply_rules(e, ip_fail_count)   # result 是 dict
+
+        e["score"] = result["final_score"]
+        e["risk"] = risk(result["final_score"])
+        e["matched_rules"] = result["matched_rules"]
+        e["tags"] = result["tags"]
+        e["ip_fail_count"] = ip_fail_count
+
+        scored_events.append(e)
+    # ===== 到這裡 =====
+
+    # 後面如果要用 scored_events
+    ip_incidents = build_ip_incidents(scored_events)
+    b2_incidents = detect_fail_then_success(scored_events)
+
+    ip_counter = Counter(e["ip"] for e in scored_events if e["ip"])
 
     return {
         "summary": {
-            "total_events": len(events),
+            "total_events": len(scored_events),
         },
         "top_ips": ip_counter.most_common(3),
         "incidents": ip_incidents + b2_incidents
     }
-
+    # 讓 rules engine 有資料可以用
+ 
+def risk(score: int) -> str:
+    if score >= 70:
+        return "CRITICAL"
+    if score >= 40:
+        return "HIGH"
+    return "LOW"
 # --------------------
 # Main
 # --------------------
+
+
+    
 if __name__ == "__main__":
     report = build_report()
     print(json.dumps(report, ensure_ascii=False, indent=2))
+

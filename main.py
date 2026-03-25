@@ -8,48 +8,49 @@ from incidents import (
     build_risk_enriched_incidents,
 )
 
-auth_log_path = "logs/auth.log"
-auth_events = parse_auth_log(auth_log_path)
-print(f"[main] parsed auth events: {len(auth_events)}")
 
-account_incidents = build_account_based_incidents(
-    auth_events,
-    window=timedelta(minutes=5),
-    fail_threshold=5,
-    ip_threshold=3,
-)
-print(f"[account] incidents found: {len(account_incidents)}")
 
-correlated = build_correlated_incidents(
-    auth_events,
-    window=timedelta(minutes=5),
-    fail_threshold=5,
-)
-print(f"[correlation] incidents found: {len(correlated)}")
+def analyze_auth_log(auth_log_path: str):
+    auth_events = parse_auth_log(auth_log_path)
 
-b2_incidents = detect_fail_then_success(
-    auth_events=auth_events,
-    window=timedelta(minutes=5),
-)
-print(f"[B2] incidents found: {len(b2_incidents)}")
+    account_incidents = build_account_based_incidents(
+        auth_events,
+        window=timedelta(minutes=5),
+        fail_threshold=5,
+        ip_threshold=3,
+    )
 
-# ✅ B3 要在 enriched 之前
-b3_incidents = detect_ip_multi_account_attack(
-    auth_events=auth_events,
-    window=timedelta(minutes=5),
-    user_threshold=3,
-)
-print(f"[B3] incidents found: {len(b3_incidents)}")
+    correlated = build_correlated_incidents(
+        auth_events,
+        window=timedelta(minutes=5),
+        fail_threshold=5,
+    )
 
-# ✅ enriched 最後做
-enriched = build_risk_enriched_incidents(
-    auth_events=auth_events,
-    ip_incidents=correlated,
-    account_incidents=account_incidents,
-    b2_incidents=b2_incidents,
-)
+    b2_incidents = detect_fail_then_success(
+        auth_events=auth_events,
+        window=timedelta(minutes=5),
+    )
 
-print(f"[enriched] incidents found: {len(enriched)}")
-if enriched:
-    print("[enriched] top incident:")
-    print(enriched[0])
+    b3_incidents = detect_ip_multi_account_attack(
+        auth_events=auth_events,
+        window=timedelta(minutes=5),
+        user_threshold=3,
+    )
+
+    enriched = build_risk_enriched_incidents(
+        auth_events=auth_events,
+        ip_incidents=correlated,
+        account_incidents=account_incidents,
+        b2_incidents=b2_incidents,
+    )
+
+    return {
+        "event_count": len(auth_events),
+        "incident_count": len(enriched),
+        "top_incident": enriched[0] if enriched else None,
+    }
+
+
+if __name__ == "__main__":
+    result = analyze_auth_log("logs/auth.log")
+    print(result)

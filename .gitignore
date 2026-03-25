@@ -1,4 +1,14 @@
 __pycache__/
 *.pyc
+.venv/
+env/
+node_modules/
+dashboard/node_modules/
+dist/
+build/
+uploads/
+logs/
+cloud_logs/
 report.json
-logs/*.log
+unified_report.json
+.DS_Store
