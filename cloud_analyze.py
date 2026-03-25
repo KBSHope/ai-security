@@ -1,4 +1,3 @@
-# cloud_analyze.py
 import json
 from datetime import datetime, timezone
 from pathlib import Path
@@ -12,7 +11,6 @@ def _parse_ts(s: str) -> datetime | None:
         return None
     try:
         if s.endswith("Z"):
-            # UTC
             return datetime.fromisoformat(s.replace("Z", "+00:00"))
         return datetime.fromisoformat(s)
     except Exception:
@@ -23,23 +21,13 @@ def parse_cloudtrail_jsonl(path: str) -> list[dict]:
     """
     Read CloudTrail logs in JSONL format (one JSON object per line).
     Return normalized events list.
-
-    Normalized event fields:
-      - timestamp: datetime
-      - source: "cloudtrail"
-      - event_name: str
-      - event_source: str
-      - username: str
-      - ip: str
-      - status: "success" | "fail"
-      - raw: str (original line)
-      - extra: dict (optional)
     """
     p = Path(path)
     if not p.exists():
         raise FileNotFoundError(f"cloudtrail log not found: {p.resolve()}")
 
     events: list[dict] = []
+
     for line in p.read_text(encoding="utf-8", errors="replace").splitlines():
         raw = line.strip()
         if not raw:
@@ -50,10 +38,10 @@ def parse_cloudtrail_jsonl(path: str) -> list[dict]:
         except Exception as e:
             print("PARSE ERROR:", e)
             print("BAD LINE:", line)
+            continue
 
         ts = _parse_ts(obj.get("eventTime")) or datetime.now(timezone.utc)
 
-        # identity
         ui = obj.get("userIdentity") or {}
         username = (
             ui.get("userName")
@@ -62,13 +50,15 @@ def parse_cloudtrail_jsonl(path: str) -> list[dict]:
             or "unknown"
         )
 
-        ip = obj.get("sourceIPAddress") or obj.get("additionalEventData", {}).get("sourceIPAddress") or ""
+        ip = (
+            obj.get("sourceIPAddress")
+            or obj.get("additionalEventData", {}).get("sourceIPAddress")
+            or ""
+        )
 
         event_name = obj.get("eventName") or ""
         event_source = obj.get("eventSource") or ""
 
-        # determine success/fail
-        # CloudTrail usually: presence of "errorCode"/"errorMessage" => fail
         status = "fail" if (obj.get("errorCode") or obj.get("errorMessage")) else "success"
 
         events.append(
@@ -84,6 +74,8 @@ def parse_cloudtrail_jsonl(path: str) -> list[dict]:
                 "extra": {
                     "awsRegion": obj.get("awsRegion"),
                     "eventType": obj.get("eventType"),
+                    "errorCode": obj.get("errorCode"),
+                    "errorMessage": obj.get("errorMessage"),
                 },
             }
         )

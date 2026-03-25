@@ -110,6 +110,24 @@ A typical usage flow looks like this:
 
 ---
 
+## Demo Files
+
+This project includes sample files for local demo testing:
+
+- `samples/auth.log`
+- `samples/cloudtrail.jsonl`
+
+You can use these files to test the unified analysis flow in the dashboard.
+
+---
+
+## Quick Demo
+
+### 1. Start backend
+
+```bash
+py -m uvicorn api:app --reload
+
 ## Tech Stack
 
 ### Backend

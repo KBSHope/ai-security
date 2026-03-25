@@ -1,0 +1,4 @@
+{"eventTime":"2026-02-23T08:00:00Z","eventName":"ConsoleLogin","eventSource":"signin.amazonaws.com","userIdentity":{"type":"Root","accountId":"123456789012","userName":"root"},"sourceIPAddress":"1.2.3.4"}
+{"eventTime":"2026-02-23T08:01:00Z","eventName":"ListBuckets","eventSource":"s3.amazonaws.com","userIdentity":{"type":"IAMUser","userName":"admin"},"sourceIPAddress":"1.2.3.4"}
+{"eventTime":"2026-02-23T08:02:00Z","eventName":"ListBuckets","eventSource":"s3.amazonaws.com","userIdentity":{"type":"IAMUser","userName":"admin"},"sourceIPAddress":"1.2.3.4"}
+{"eventTime":"2026-02-23T09:00:00Z","eventName":"AttachUserPolicy","eventSource":"iam.amazonaws.com","userIdentity":{"type":"IAMUser","userName":"attacker"},"sourceIPAddress":"9.9.9.9"}{"eventTime":"2026-02-23T09:00:02Z","eventName":"AttachUserPolicy","eventSource":"iam.amazonaws.com","userIdentity":{"type":"IAMUser","userName":"attacker"},"sourceIPAddress":"9.9.9.9"}

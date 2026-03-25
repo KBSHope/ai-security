@@ -1,4 +1,6 @@
 from datetime import timedelta
+from collections import Counter
+
 from analyze import parse_auth_log
 from incidents import (
     build_account_based_incidents,
@@ -8,6 +10,28 @@ from incidents import (
     build_risk_enriched_incidents,
 )
 
+
+def _normalize_risk(value) -> str:
+    if not value:
+        return "UNKNOWN"
+    return str(value).upper()
+
+
+def _count_risks(incidents: list[dict]) -> dict:
+    counter = Counter()
+    for inc in incidents or []:
+        risk = _normalize_risk(inc.get("risk") or inc.get("severity"))
+        counter[risk] += 1
+    return dict(counter)
+
+
+def _count_top_ips_from_incidents(incidents: list[dict], limit: int = 5) -> list[list]:
+    counter = Counter()
+    for inc in incidents or []:
+        ip = inc.get("ip")
+        if ip:
+            counter[str(ip)] += 1
+    return [[ip, count] for ip, count in counter.most_common(limit)]
 
 
 def analyze_auth_log(auth_log_path: str):
@@ -44,10 +68,16 @@ def analyze_auth_log(auth_log_path: str):
         b2_incidents=b2_incidents,
     )
 
+    by_risk = _count_risks(enriched)
+    top_ips = _count_top_ips_from_incidents(enriched, limit=5)
+
     return {
         "event_count": len(auth_events),
         "incident_count": len(enriched),
         "top_incident": enriched[0] if enriched else None,
+        "incidents": enriched,
+        "by_risk": by_risk,
+        "top_ips": top_ips,
     }
 
 
