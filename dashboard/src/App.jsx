@@ -13,37 +13,43 @@ export default function AISecurityDashboard() {
   const API_BASE_URL = "http://127.0.0.1:8000";
 
   const handleAnalyze = async () => {
-    if (!authFile || !cloudFile) {
-      setError("請先選擇 auth_file 和 cloud_file");
-      return;
+  if (!authFile || !cloudFile) {
+    setError("請先選擇 auth_file 和 cloud_file");
+    return;
+  }
+
+  setLoading(true);
+  setError("");
+
+  try {
+    const formData = new FormData();
+    formData.append("auth_file", authFile);
+    formData.append("cloud_file", cloudFile);
+
+    const response = await fetch(`${API_BASE_URL}/analyze/unified`, {
+      method: "POST",
+      body: formData,
+    });
+
+    if (!response.ok) {
+      throw new Error("分析失敗");
     }
 
-    setLoading(true);
-    setError("");
+    const data = await response.json();
+    setResult(data);
 
-    try {
-      const formData = new FormData();
-      formData.append("auth_file", authFile);
-      formData.append("cloud_file", cloudFile);
-
-      const response = await fetch(`${API_BASE_URL}/analyze/unified`, {
-        method: "POST",
-        body: formData,
+    setTimeout(() => {
+      resultsRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
       });
-
-      if (!response.ok) {
-        throw new Error("分析失敗");
-      }
-
- const data = await response.json();
-setResult(data);
-
-setTimeout(() => {
-  resultsRef.current?.scrollIntoView({
-    behavior: "smooth",
-    block: "start",
-  });
-}, 100);
+    }, 100);
+  } catch (err) {
+    setError(err.message || "發生錯誤");
+  } finally {
+    setLoading(false);
+  }
+};
 
   const handleDownloadReport = () => {
     if (!result) return;
@@ -857,7 +863,7 @@ const handleReset = () => {
     }}
   >
     </div>
-    
+
           <div style={{ ...cardStyle, padding: "20px" }}>
             <div style={{ color: "#64748b", fontSize: "14px" }}>Incidents</div>
             <div style={{ fontSize: "40px", fontWeight: 800, marginTop: "10px" }}>
