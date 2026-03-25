@@ -1,50 +1,39 @@
-# AI Security SaaS MVP
+# AI Security SaaS
 
-一個可上傳 **Linux auth log** 與 **CloudTrail log**，並進行 **Unified Threat Analysis** 的 AI Security SaaS MVP。
-
-目前已完成：
-
-- FastAPI 後端 API
-- React + Vite 前端 Dashboard
-- Unified Analysis 串接
-- Incident 顯示
-- Timeline 顯示
-- JSON 報告下載
-- HTML 報告下載
+AI Security SaaS 是一個以 **Python + FastAPI + React** 建立的安全日誌分析專案。  
+它可以分析本機 auth log、CloudTrail 類型事件，並產出風險結果與報告，作為未來 SaaS 化資安產品的 MVP 基礎。
 
 ---
 
 ## Features
 
-### 1. Unified Threat Analysis
-可同時上傳：
+- Analyze local auth logs
+- Detect suspicious login behavior
+- Score security events by risk level
+- Generate JSON security reports
+- Support CloudTrail-style log analysis
+- Unified analysis structure for multi-source logs
+- Frontend dashboard built with React + Vite
+- FastAPI backend for future SaaS expansion
 
-- `auth.log`
-- `cloudtrail.jsonl`
+---
 
-系統會將兩種來源的資料做整合分析，輸出：
+## Tech Stack
 
-- incidents
-- risk score
-- critical incidents
-- top IP
-- timeline
+### Backend
+- Python
+- FastAPI
 
-### 2. Web Dashboard
-前端 Dashboard 可顯示：
+### Frontend
+- React
+- Vite
+- JavaScript
+- CSS
 
-- Executive Summary
-- Highest Risk Score
-- Critical Incidents
-- Top IP
-- Incidents 卡片
-- Timeline 表格
-
-### 3. Report Export
-支援下載：
-
-- `unified_report.json`
-- `unified_report.html`
+### Other
+- Git
+- GitHub
+- JSON-based report output
 
 ---
 
@@ -55,47 +44,26 @@ ai-security/
 ├─ api.py
 ├─ main.py
 ├─ analyze.py
-├─ analyze_ai.py
-├─ cloud_analyze.py
-├─ unify_report.py
 ├─ incidents.py
 ├─ rules.py
-├─ logs/
-│  └─ auth.log
-├─ cloud_logs/
-│  └─ cloudtrail.jsonl
-├─ uploads/
+├─ report.py
+├─ export_report.py
+├─ cloud_analyze.py
+├─ cloud_report.py
+├─ unify_report.py
+├─ README.md
+├─ .gitignore
 ├─ dashboard/
-│  ├─ src/
-│  │  └─ App.jsx
 │  ├─ package.json
-│  └─ vite.config.js
-└─ README.md
-
-
-
-## Tech Stack
-
-### Backend
-- FastAPI
-- Python
-
-### Frontend
-- React
-- Vite
-
-### Analysis
-- Auth log analysis
-- CloudTrail analysis
-- Unified incident reporting
-
----
-
-## How to Run
-
-### 1. Start Backend
-
-在專案根目錄執行：
-
-```bash
-py -m uvicorn api:app --reload
+│  ├─ package-lock.json
+│  ├─ vite.config.js
+│  ├─ index.html
+│  ├─ src/
+│  │  ├─ App.jsx
+│  │  ├─ App.css
+│  │  ├─ main.jsx
+│  │  └─ index.css
+│  └─ public/
+├─ logs/
+├─ cloud_logs/
+└─ uploads/
