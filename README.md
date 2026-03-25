@@ -1,6 +1,7 @@
 # AI Security SaaS MVP
 
-AI Security SaaS MVP is a security log analysis project built with **Python, FastAPI, React, and Vite**.  
+AI Security SaaS MVP is a security log analysis project built with **Python, FastAPI, React, and Vite**.
+
 It is designed as an early-stage SaaS prototype that can analyze local authentication logs and CloudTrail-style logs, then generate structured security findings, incidents, and downloadable reports.
 
 This project is positioned as a **founder-style MVP** for an AI-driven cybersecurity product.
@@ -9,7 +10,8 @@ This project is positioned as a **founder-style MVP** for an AI-driven cybersecu
 
 ## Product Vision
 
-Small and mid-sized teams often do not have a full SOC, SIEM, or dedicated security analyst.  
+Small and mid-sized teams often do not have a full SOC, SIEM, or dedicated security analyst.
+
 This project explores how an AI-assisted SaaS product can help users:
 
 - upload security logs
@@ -31,69 +33,76 @@ Security data is often scattered across different sources such as:
 - incident notes
 - exported JSON results
 
-For smaller teams, reviewing these manually is slow and inconsistent.
-
-This MVP focuses on solving that by providing:
-
-- unified threat analysis
-- basic risk scoring
-- incident-oriented output
-- dashboard-based visibility
-- report export workflow
+This MVP brings those signals into one unified workflow.
 
 ---
 
 ## Core Features
 
 ### 1. Local Auth Log Analysis
+
 Analyze authentication-related logs and detect suspicious login activity.
 
 Examples:
+
 - failed login attempts
 - repeated login failures
 - invalid access patterns
 - suspicious IP-related behavior
 
 ### 2. CloudTrail-style Log Analysis
+
 Support cloud event analysis through CloudTrail-like log structures.
 
 Examples:
+
 - suspicious API activity
 - abnormal cloud events
 - identity-based activity review
 
 ### 3. Unified Threat Analysis
+
 Combine multiple sources into one analysis flow.
 
 Examples:
+
 - auth log + cloud log review
 - incident aggregation
 - single report output for multiple event streams
 
 ### 4. Risk Scoring
+
 Assign a risk level to security findings.
 
 Typical levels:
+
 - LOW
 - MEDIUM
 - HIGH
+- CRITICAL
 
 ### 5. Report Generation
+
 Generate structured output for downstream usage.
 
 Supported directions:
+
 - JSON report output
 - incident-style summaries
 - downloadable report workflow
 
 ### 6. Frontend Dashboard
+
 A React-based dashboard is included for future SaaS usage.
 
-Dashboard direction includes:
+Dashboard includes:
+
 - analysis result display
 - incident visibility
 - timeline view
 - report download entry
+- reset flow
+- smooth scroll to result area
 
 ---
 
@@ -127,100 +136,3 @@ You can use these files to test the unified analysis flow in the dashboard.
 
 ```bash
 py -m uvicorn api:app --reload
-
-## Tech Stack
-
-### Backend
-- Python
-- FastAPI
-
-### Frontend
-- React
-- Vite
-- JavaScript
-- CSS
-
-### Development / Delivery
-- Git
-- GitHub
-- JSON-based report output
-
----
-
-## Architecture Overview
-
-This project is organized into three main parts:
-
-### 1. Analysis Layer
-Responsible for parsing logs, applying rules, and generating findings.
-
-Main files:
-- `analyze.py`
-- `rules.py`
-- `incidents.py`
-- `report.py`
-- `export_report.py`
-
-### 2. Cloud / Unified Analysis Layer
-Responsible for cloud log handling and cross-source report flow.
-
-Main files:
-- `cloud_analyze.py`
-- `cloud_report.py`
-- `unify_report.py`
-
-### 3. API + SaaS Layer
-Responsible for exposing backend functionality for web usage.
-
-Main file:
-- `api.py`
-
-### 4. Frontend Layer
-Responsible for visualizing analysis results through a web dashboard.
-
-Main folder:
-- `dashboard/`
-
-
-## Screenshots
-
-### Dashboard
-![Dashboard Home](./docs/dashboard-home.png)
-
-### API Docs
-![API Docs](./docs/api-docs.png)
-
----
-
-## Project Structure
-
-
-
-```bash
-ai-security/
-├─ api.py
-├─ main.py
-├─ analyze.py
-├─ incidents.py
-├─ rules.py
-├─ report.py
-├─ export_report.py
-├─ cloud_analyze.py
-├─ cloud_report.py
-├─ unify_report.py
-├─ README.md
-├─ .gitignore
-├─ dashboard/
-│  ├─ package.json
-│  ├─ package-lock.json
-│  ├─ vite.config.js
-│  ├─ index.html
-│  ├─ src/
-│  │  ├─ App.jsx
-│  │  ├─ App.css
-│  │  ├─ main.jsx
-│  │  └─ index.css
-│  └─ public/
-├─ logs/
-├─ cloud_logs/
-└─ uploads/
