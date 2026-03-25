@@ -1,20 +1,112 @@
-# AI Security SaaS
+# AI Security SaaS MVP
 
-AI Security SaaS 是一個以 **Python + FastAPI + React** 建立的安全日誌分析專案。  
-它可以分析本機 auth log、CloudTrail 類型事件，並產出風險結果與報告，作為未來 SaaS 化資安產品的 MVP 基礎。
+AI Security SaaS MVP is a security log analysis project built with **Python, FastAPI, React, and Vite**.  
+It is designed as an early-stage SaaS prototype that can analyze local authentication logs and CloudTrail-style logs, then generate structured security findings, incidents, and downloadable reports.
+
+This project is positioned as a **founder-style MVP** for an AI-driven cybersecurity product.
 
 ---
 
-## Features
+## Product Vision
 
-- Analyze local auth logs
-- Detect suspicious login behavior
-- Score security events by risk level
-- Generate JSON security reports
-- Support CloudTrail-style log analysis
-- Unified analysis structure for multi-source logs
-- Frontend dashboard built with React + Vite
-- FastAPI backend for future SaaS expansion
+Small and mid-sized teams often do not have a full SOC, SIEM, or dedicated security analyst.  
+This project explores how an AI-assisted SaaS product can help users:
+
+- upload security logs
+- detect suspicious behaviors
+- unify multi-source events
+- generate readable incident summaries
+- export security reports quickly
+
+The long-term vision is to turn this into a lightweight **AI Security Analysis Platform** for teams that want faster visibility without enterprise-grade complexity.
+
+---
+
+## Problem It Solves
+
+Security data is often scattered across different sources such as:
+
+- Linux auth logs
+- cloud activity logs
+- incident notes
+- exported JSON results
+
+For smaller teams, reviewing these manually is slow and inconsistent.
+
+This MVP focuses on solving that by providing:
+
+- unified threat analysis
+- basic risk scoring
+- incident-oriented output
+- dashboard-based visibility
+- report export workflow
+
+---
+
+## Core Features
+
+### 1. Local Auth Log Analysis
+Analyze authentication-related logs and detect suspicious login activity.
+
+Examples:
+- failed login attempts
+- repeated login failures
+- invalid access patterns
+- suspicious IP-related behavior
+
+### 2. CloudTrail-style Log Analysis
+Support cloud event analysis through CloudTrail-like log structures.
+
+Examples:
+- suspicious API activity
+- abnormal cloud events
+- identity-based activity review
+
+### 3. Unified Threat Analysis
+Combine multiple sources into one analysis flow.
+
+Examples:
+- auth log + cloud log review
+- incident aggregation
+- single report output for multiple event streams
+
+### 4. Risk Scoring
+Assign a risk level to security findings.
+
+Typical levels:
+- LOW
+- MEDIUM
+- HIGH
+
+### 5. Report Generation
+Generate structured output for downstream usage.
+
+Supported directions:
+- JSON report output
+- incident-style summaries
+- downloadable report workflow
+
+### 6. Frontend Dashboard
+A React-based dashboard is included for future SaaS usage.
+
+Dashboard direction includes:
+- analysis result display
+- incident visibility
+- timeline view
+- report download entry
+
+---
+
+## Demo Workflow
+
+A typical usage flow looks like this:
+
+1. Prepare security log files
+2. Run backend analysis
+3. Parse and score suspicious events
+4. Generate structured security report
+5. Display results in frontend dashboard
+6. Export report for review or sharing
 
 ---
 
@@ -30,10 +122,46 @@ AI Security SaaS 是一個以 **Python + FastAPI + React** 建立的安全日誌
 - JavaScript
 - CSS
 
-### Other
+### Development / Delivery
 - Git
 - GitHub
 - JSON-based report output
+
+---
+
+## Architecture Overview
+
+This project is organized into three main parts:
+
+### 1. Analysis Layer
+Responsible for parsing logs, applying rules, and generating findings.
+
+Main files:
+- `analyze.py`
+- `rules.py`
+- `incidents.py`
+- `report.py`
+- `export_report.py`
+
+### 2. Cloud / Unified Analysis Layer
+Responsible for cloud log handling and cross-source report flow.
+
+Main files:
+- `cloud_analyze.py`
+- `cloud_report.py`
+- `unify_report.py`
+
+### 3. API + SaaS Layer
+Responsible for exposing backend functionality for web usage.
+
+Main file:
+- `api.py`
+
+### 4. Frontend Layer
+Responsible for visualizing analysis results through a web dashboard.
+
+Main folder:
+- `dashboard/`
 
 ---
 
