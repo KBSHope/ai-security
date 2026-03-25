@@ -8,7 +8,8 @@ export default function AISecurityDashboard() {
   const [result, setResult] = useState(null);
   const authInputRef = useRef(null);
   const cloudInputRef = useRef(null);
-
+  const resultsRef = useRef(null);
+  
   const API_BASE_URL = "http://127.0.0.1:8000";
 
   const handleAnalyze = async () => {
@@ -34,14 +35,15 @@ export default function AISecurityDashboard() {
         throw new Error("分析失敗");
       }
 
-      const data = await response.json();
-      setResult(data);
-    } catch (err) {
-      setError(err.message || "發生錯誤");
-    } finally {
-      setLoading(false);
-    }
-  };
+ const data = await response.json();
+setResult(data);
+
+setTimeout(() => {
+  resultsRef.current?.scrollIntoView({
+    behavior: "smooth",
+    block: "start",
+  });
+}, 100);
 
   const handleDownloadReport = () => {
     if (!result) return;
@@ -845,14 +847,17 @@ const handleReset = () => {
           </div>
         </div>
 
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr 1fr",
-            gap: "16px",
-            marginTop: "22px",
-          }}
-        >
+        <div ref={resultsRef}>
+  <div
+    style={{
+      display: "grid",
+      gridTemplateColumns: "1fr 1fr 1fr",
+      gap: "16px",
+      marginTop: "22px",
+    }}
+  >
+    </div>
+    
           <div style={{ ...cardStyle, padding: "20px" }}>
             <div style={{ color: "#64748b", fontSize: "14px" }}>Incidents</div>
             <div style={{ fontSize: "40px", fontWeight: 800, marginTop: "10px" }}>
