@@ -165,7 +165,15 @@ export default function AISecurityDashboard() {
       (i) => String(i.severity || i.risk || "").toUpperCase() === "CRITICAL"
     ).length;
 
-    const topIp = result.incidents?.[0]?.ip || "-";
+    const topIp =
+      Array.isArray(result?.top_ips) && result.top_ips.length > 0
+        ? result.top_ips[0][0]
+        : result.incidents?.[0]?.ip || "-";
+
+    const topIpCount =
+      Array.isArray(result?.top_ips) && result.top_ips.length > 0
+        ? result.top_ips[0][1]
+        : (result.incidents || []).filter((i) => i.ip && i.ip === topIp).length;
 
     const html = `
 <!DOCTYPE html>
@@ -335,7 +343,7 @@ export default function AISecurityDashboard() {
           <div style="padding:16px;border-radius:16px;border:1px solid #e2e8f0;background:#f8fafc;">
             <div style="font-size:14px;color:#64748b;">Top IP Count</div>
             <div style="font-size:36px;font-weight:800;margin-top:8px;">${escapeHtml(
-              String(result.top_ips?.length || 0)
+              String(topIpCount)
             )}</div>
           </div>
           <div style="padding:16px;border-radius:16px;border:1px solid #e2e8f0;background:#f8fafc;">
@@ -401,7 +409,15 @@ export default function AISecurityDashboard() {
     (i) => (i.severity || i.risk || "").toUpperCase() === "CRITICAL"
   ).length;
 
-  const topIp = incidents[0]?.ip || "-";
+  const topIp =
+    Array.isArray(result?.top_ips) && result.top_ips.length > 0
+      ? result.top_ips[0][0]
+      : incidents[0]?.ip || "-";
+
+  const topIpCount =
+    Array.isArray(result?.top_ips) && result.top_ips.length > 0
+      ? result.top_ips[0][1]
+      : incidents.filter((i) => i.ip && i.ip === topIp).length;
 
   const timeline = useMemo(() => {
     return incidents.map((item, idx) => ({
@@ -586,7 +602,13 @@ export default function AISecurityDashboard() {
                   onChange={(e) => setAuthFile(e.target.files?.[0] || null)}
                   style={{ display: "block", width: "100%" }}
                 />
-                <p style={{ marginTop: "10px", color: "#475569", minHeight: "24px" }}>
+                <p
+                  style={{
+                    marginTop: "10px",
+                    color: "#475569",
+                    minHeight: "24px",
+                  }}
+                >
                   {authFile ? authFile.name : "尚未選擇檔案"}
                 </p>
               </div>
@@ -613,7 +635,13 @@ export default function AISecurityDashboard() {
                   onChange={(e) => setCloudFile(e.target.files?.[0] || null)}
                   style={{ display: "block", width: "100%" }}
                 />
-                <p style={{ marginTop: "10px", color: "#475569", minHeight: "24px" }}>
+                <p
+                  style={{
+                    marginTop: "10px",
+                    color: "#475569",
+                    minHeight: "24px",
+                  }}
+                >
                   {cloudFile ? cloudFile.name : "尚未選擇檔案"}
                 </p>
               </div>
@@ -713,8 +741,16 @@ export default function AISecurityDashboard() {
                   color: "white",
                 }}
               >
-                <div style={{ opacity: 0.8, fontSize: "14px" }}>Highest Risk Score</div>
-                <div style={{ fontSize: "42px", fontWeight: 800, marginTop: "6px" }}>
+                <div style={{ opacity: 0.8, fontSize: "14px" }}>
+                  Highest Risk Score
+                </div>
+                <div
+                  style={{
+                    fontSize: "42px",
+                    fontWeight: 800,
+                    marginTop: "6px",
+                  }}
+                >
                   {highestRiskScore}
                 </div>
               </div>
@@ -734,7 +770,9 @@ export default function AISecurityDashboard() {
                     border: "1px solid #ffe4e6",
                   }}
                 >
-                  <div style={{ color: "#64748b", fontSize: "13px" }}>Critical Incidents</div>
+                  <div style={{ color: "#64748b", fontSize: "13px" }}>
+                    Critical Incidents
+                  </div>
                   <div
                     style={{
                       fontSize: "30px",
@@ -791,7 +829,7 @@ export default function AISecurityDashboard() {
           <div style={{ ...cardStyle, padding: "20px" }}>
             <div style={{ color: "#64748b", fontSize: "14px" }}>Top IP Count</div>
             <div style={{ fontSize: "40px", fontWeight: 800, marginTop: "10px" }}>
-              {result?.top_ips?.length || 0}
+              {topIpCount}
             </div>
           </div>
 
@@ -918,7 +956,9 @@ export default function AISecurityDashboard() {
                         }}
                       >
                         <div style={{ fontSize: "12px", color: "#64748b" }}>IP</div>
-                        <div style={{ fontWeight: 700, marginTop: "6px" }}>{item.ip || "-"}</div>
+                        <div style={{ fontWeight: 700, marginTop: "6px" }}>
+                          {item.ip || "-"}
+                        </div>
                       </div>
 
                       <div
@@ -930,7 +970,9 @@ export default function AISecurityDashboard() {
                         }}
                       >
                         <div style={{ fontSize: "12px", color: "#64748b" }}>Count</div>
-                        <div style={{ fontWeight: 700, marginTop: "6px" }}>{item.count ?? "-"}</div>
+                        <div style={{ fontWeight: 700, marginTop: "6px" }}>
+                          {item.count ?? "-"}
+                        </div>
                       </div>
 
                       <div
@@ -941,7 +983,9 @@ export default function AISecurityDashboard() {
                           border: "1px solid #e2e8f0",
                         }}
                       >
-                        <div style={{ fontSize: "12px", color: "#64748b" }}>Risk Score</div>
+                        <div style={{ fontSize: "12px", color: "#64748b" }}>
+                          Risk Score
+                        </div>
                         <div style={{ fontWeight: 700, marginTop: "6px" }}>
                           {item.risk_score ?? "-"}
                         </div>
@@ -957,7 +1001,9 @@ export default function AISecurityDashboard() {
                         borderRadius: "14px",
                       }}
                     >
-                      <div style={{ fontSize: "12px", color: "#64748b" }}>Window</div>
+                      <div style={{ fontSize: "12px", color: "#64748b" }}>
+                        Window
+                      </div>
                       <div style={{ marginTop: "6px", fontWeight: 600 }}>
                         {item.window || "-"}
                       </div>
@@ -1105,11 +1151,40 @@ export default function AISecurityDashboard() {
                   </thead>
                   <tbody>
                     {timeline.map((row) => (
-                      <tr key={row.id} style={{ borderTop: "1px solid #e2e8f0" }}>
-                        <td style={{ padding: "14px", fontSize: "14px" }}>{row.time}</td>
-                        <td style={{ padding: "14px", fontWeight: 700 }}>{row.event}</td>
-                        <td style={{ padding: "14px" }}>{row.ip}</td>
-                        <td style={{ padding: "14px" }}>
+                      <tr key={row.id}>
+                        <td
+                          style={{
+                            padding: "12px 14px",
+                            borderTop: "1px solid #e2e8f0",
+                            color: "#334155",
+                          }}
+                        >
+                          {row.time}
+                        </td>
+                        <td
+                          style={{
+                            padding: "12px 14px",
+                            borderTop: "1px solid #e2e8f0",
+                            fontWeight: 700,
+                          }}
+                        >
+                          {row.event}
+                        </td>
+                        <td
+                          style={{
+                            padding: "12px 14px",
+                            borderTop: "1px solid #e2e8f0",
+                            color: "#334155",
+                          }}
+                        >
+                          {row.ip}
+                        </td>
+                        <td
+                          style={{
+                            padding: "12px 14px",
+                            borderTop: "1px solid #e2e8f0",
+                          }}
+                        >
                           <span
                             style={{
                               ...getBadgeStyle(row.severity),
@@ -1141,7 +1216,7 @@ function escapeHtml(value) {
     .replaceAll("<", "&lt;")
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
+    .replaceAll("'", "&#39;");
 }
 
 function badgeInlineStyle(level) {
@@ -1159,6 +1234,5 @@ function badgeInlineStyle(level) {
   if (value === "LOW") {
     return "background:#dcfce7;color:#166534;border:1px solid #bbf7d0;";
   }
-
   return "background:#e2e8f0;color:#334155;border:1px solid #cbd5e1;";
 }
