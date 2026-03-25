@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 
 export default function AISecurityDashboard() {
   const [authFile, setAuthFile] = useState(null);
@@ -6,6 +6,8 @@ export default function AISecurityDashboard() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [result, setResult] = useState(null);
+  const authInputRef = useRef(null);
+  const cloudInputRef = useRef(null);
 
   const API_BASE_URL = "http://127.0.0.1:8000";
 
@@ -399,6 +401,21 @@ export default function AISecurityDashboard() {
     URL.revokeObjectURL(url);
   };
 
+const handleReset = () => {
+  setAuthFile(null);
+  setCloudFile(null);
+  setResult(null);
+  setError("");
+  setLoading(false);
+
+  if (authInputRef.current) {
+    authInputRef.current.value = "";
+  }
+  if (cloudInputRef.current) {
+    cloudInputRef.current.value = "";
+  }
+};
+
   const incidents = result?.incidents || [];
 
   const highestRiskScore = incidents.length
@@ -598,10 +615,11 @@ export default function AISecurityDashboard() {
                   auth_file
                 </label>
                 <input
-                  type="file"
-                  onChange={(e) => setAuthFile(e.target.files?.[0] || null)}
-                  style={{ display: "block", width: "100%" }}
-                />
+  ref={authInputRef}
+  type="file"
+  onChange={(e) => setAuthFile(e.target.files?.[0] || null)}
+  style={{ display: "block", width: "100%" }}
+/>
                 <p
                   style={{
                     marginTop: "10px",
@@ -631,10 +649,11 @@ export default function AISecurityDashboard() {
                   cloud_file
                 </label>
                 <input
-                  type="file"
-                  onChange={(e) => setCloudFile(e.target.files?.[0] || null)}
-                  style={{ display: "block", width: "100%" }}
-                />
+  ref={cloudInputRef}
+  type="file"
+  onChange={(e) => setCloudFile(e.target.files?.[0] || null)}
+  style={{ display: "block", width: "100%" }}
+/>
                 <p
                   style={{
                     marginTop: "10px",
@@ -706,6 +725,21 @@ export default function AISecurityDashboard() {
                 }}
               >
                 Download HTML Report
+                <button
+  onClick={handleReset}
+  style={{
+    padding: "14px 22px",
+    background: "#ffffff",
+    color: "#0f172a",
+    border: "1px solid #cbd5e1",
+    borderRadius: "14px",
+    cursor: "pointer",
+    fontWeight: 700,
+    fontSize: "15px",
+  }}
+>
+  Reset
+</button>
               </button>
 
               <span style={{ color: "#64748b", fontSize: "14px" }}>
